@@ -27,11 +27,11 @@
           rules: {
             username: [
               { required: true, message: '请输入账号', trigger: 'blur' },
-              { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+              { min: 5, max: 10, message: '长度在 5 到 10 个字符', trigger: 'blur' }
             ],
             password: [
               { required: true, message: '请输入密码', trigger: 'blur' },
-              { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+              { min: 5, max: 10, message: '长度在 5 到 10 个字符', trigger: 'blur' }
             ]
           },
           loading: true
@@ -39,13 +39,21 @@
       },
       methods: {
         submitForm(formName) {
+          let data = this.form;
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              sessionStorage.setItem('isLogin', this.form.username);
-              this.$router.push('/home');
+              this.axios.post('http://localhost:8080/api/admin/login', data).then(res=>{
+                console.log(res);
+                if(res.data.code === 200){
+                  sessionStorage.setItem('isLogin', this.form.username);
+                  this.$router.push('/home');
+                }else{
+                  this.$message.error(res.data.msg);
+                }
+              });
             } else {
               this.$message({
-                message: '验证失败',
+                message: '请按要求输入',
                 type: 'warning'
               });
               return false;

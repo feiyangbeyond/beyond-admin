@@ -16,12 +16,16 @@ import store from './store'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
+import moment from 'moment'
+
+Vue.prototype.$moment = moment
 Vue.prototype.axios = axios;
 Vue.use(VueRouter);
 Vue.use(ElementUI);
 Vue.use(Vuex);
 Vue.use(mavonEditor);
 
+moment.locale('zh-cn');
 //路由跳转前
 router.beforeEach((to, from, next) => {
   //获取用户登录状态
