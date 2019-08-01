@@ -1,13 +1,12 @@
-import axios from 'axios'
-import router from 'router'
-import store from 'store'
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-axios.defaults.withCredentials = true;
+Vue.use(Vuex);
 
-const setUserInfo = function (token) {
-  store.commit("Authorization", token)
+const state = {
+  count: 0
 };
 
-const getUserInfo = function () {
-  return store.status.authorization.token
-};
+export default new Vuex.Store({
+  state
+})

@@ -18,11 +18,10 @@ import 'mavon-editor/dist/css/index.css'
 
 import moment from 'moment'
 
-Vue.prototype.$moment = moment
+Vue.prototype.$moment = moment;
 Vue.prototype.axios = axios;
 Vue.use(VueRouter);
 Vue.use(ElementUI);
-Vue.use(Vuex);
 Vue.use(mavonEditor);
 
 moment.locale('zh-cn');
@@ -32,12 +31,12 @@ router.beforeEach((to, from, next) => {
   let isLogin = sessionStorage.getItem('isLogin');
   console.log(to.path);
   //注销
-  if(to.path == '/logout'){
+  if(to.path === '/logout'){
     //清空
     sessionStorage.clear();
     //跳转到登录
     next({path: '/login'});
-  }else if(to.path == '/login'){
+  }else if(to.path === '/login'){
     if(isLogin != null){
       //跳转到首页
       next({path: '/home'});
