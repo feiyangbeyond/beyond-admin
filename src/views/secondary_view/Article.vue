@@ -8,7 +8,7 @@
         </el-input>
         <el-button size="medium" type="primary" plain><i class="el-icon-search"></i></el-button>
       </el-col>
-      <el-col :span="3" :offset="12">
+      <el-col :span="4" :offset="11">
         <el-button size="medium" type="primary" plain @click="addNew"><i class="el-icon-plus"></i></el-button>
         <el-button size="medium" type="primary" plain @click="getArticles"><i class="el-icon-refresh-right"></i></el-button>
         <el-button size="medium" type="primary" plain><i class="el-icon-printer"></i></el-button>
@@ -23,7 +23,7 @@
           <el-tag size="medium" disable-transitions>{{scope.row.author}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column sortable label="最后一次编辑" prop="editTime" :formatter="dateFormat" width="150"></el-table-column>
+      <el-table-column sortable label="更新时间" prop="editTime" :formatter="dateFormat" width="150"></el-table-column>
       <el-table-column label="浏览量" width="110" sortable prop="views">
         <template slot-scope="scope">
           <el-tag size="medium" disable-transitions>{{scope.row.views}}</el-tag>
@@ -36,9 +36,11 @@
         </template>
       </el-table-column>
       <el-table-column label="操作">
-        <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
-        <el-button type="warning" icon="el-icon-edit" size="mini">编辑</el-button>
-        <el-button type="primary" icon="el-icon-position" size="mini">预览</el-button>
+        <template slot-scope="scope">
+          <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteOne(scope.$index, scope.row)">删除</el-button>
+          <el-button type="warning" icon="el-icon-edit" size="mini">编辑</el-button>
+          <el-button type="primary" icon="el-icon-position" size="mini">预览</el-button>
+        </template>
       </el-table-column>
     </el-table>
     </el-row>
@@ -55,11 +57,11 @@
         name: "Article",
       data() {
         return {
-          loading: false,
-          searchArticle: '',
-          totalPage: 100,
-          currentPage: 19,
-          tableData: [{
+          loading: false, //加载动画
+          searchArticle: '', //搜索框
+          totalPage: 100, //总页数
+          currentPage: 19, //当前页
+          tableData: [{ //文章数据
             id: 1,
             title: '标题',
             author: '风不止',
@@ -69,11 +71,11 @@
             state: '0'
           }
           ],
-          search: ''
+
         }
       },
-      mounted(){
-          this.loading = true;
+      created(){
+          this.loading = false;
           this.getArticles();
       },
       methods: {
@@ -83,17 +85,36 @@
         handleCurrentChange(val) {
           console.log(`当前页: ${val}`);
         },
+        //格式化日期
         dateFormat(row, column, cellValue, index){
           return  this.$moment(row.editTime).format("YYYY-MM-DD HH:mm")
         },
+        //点击添加按钮  跳转到添加
         addNew(){
           this.$router.push('/new')
         },
+        //获取文章
         getArticles(){
           this.axios.get('http://localhost:8080/api/getContents').then(res=>{
             this.tableData = res.data.data.articles;
             this.loading = false;
           })
+        },
+        //删除一个
+        deleteOne(index, row){
+          this.$confirm('确认删除？')
+            .then(_ => {
+              console.log("确认删除"+index);
+              console.log(index, row.id) //row是index行的全部数据 index从0开始
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success'
+              });
+            })
+            .catch(_ => {
+              console.log("取消删除"+index);
+            });
         }
       },
     }
@@ -103,7 +124,10 @@
 .parent-div{
   padding: 35px;
   border-radius: 5px;
-  box-shadow: 0 0 25px #DCDFE6;
+  box-shadow: 0 0 10px #DCDFE6;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: #fff;
 }
 .el-row {
   margin-bottom: 20px;

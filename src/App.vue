@@ -12,7 +12,7 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-}
+  #app {
+    height: 100%;
+  }
 </style>

@@ -42,15 +42,18 @@
           let data = this.form;
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              this.axios.post('http://localhost:8080/api/admin/login', data).then(res=>{
-                console.log(res);
-                if(res.data.code === 200){
-                  sessionStorage.setItem('isLogin', this.form.username);
-                  this.$router.push('/home');
-                }else{
-                  this.$message.error(res.data.msg);
-                }
-              });
+              this.axios.post('http://localhost:8080/api/admin/login', data)
+                .then(res=>{
+                  //console.log(res);
+                  if(res.data.code === 200){
+                    sessionStorage.setItem('isLogin', this.form.username);
+                    this.$router.push('/profile');
+                  }
+                })
+                .catch(error =>{
+                  this.$message.error(error.toString())
+                });
+
             } else {
               this.$message({
                 message: '请按要求输入',

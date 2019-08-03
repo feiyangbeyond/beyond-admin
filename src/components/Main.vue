@@ -1,10 +1,12 @@
 <template>
-    <h1>TODO 未完成的功能</h1>
+
+    <router-view/>
+
 </template>
 
 <script>
     export default {
-        name: "Setting"
+        name: "Main"
     }
 </script>
 

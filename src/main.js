@@ -1,23 +1,24 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-
-import router from './router/index'
-import axios from 'axios'
-
 import App from './App'
-import store from './store'
+import ElementUI from 'element-ui'
 
+import axios from 'axios'
 import mavonEditor from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css'
-
 import moment from 'moment'
 
+import router from './router/index'
+import store from './store'
+
+import 'element-ui/lib/theme-chalk/index.css'
+import 'mavon-editor/dist/css/index.css'
+import './logger'
+import { version } from '../package.json'
+
+Vue.prototype.VERSION = version;
 Vue.prototype.$moment = moment;
 Vue.prototype.axios = axios;
 Vue.use(VueRouter);

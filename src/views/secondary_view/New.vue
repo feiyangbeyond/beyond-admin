@@ -34,7 +34,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <mavon-editor v-model="content"/>
+      <mavon-editor :ishljs="true" v-model="content" ref="md"/>
     </el-row>
     <el-row style="float: right; margin-bottom: 15px;">
       <el-col>
@@ -77,7 +77,7 @@
           }
       },
       methods:{
-        handleClose(tag) {
+        deleteSome(tag) {
           this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
         },
 
@@ -103,7 +103,8 @@
           let createTime = this.writeTime.toLocaleString();
           let site = this.site;
           let a_from = this.a_from;
-          let content = this.content;
+          let content = this.$refs.md.d_value;
+          let content_md = this.$refs.md.d_render;
           let article = {
             title: title,
             tags: tags,
@@ -112,8 +113,13 @@
             site: site,
             from: a_from,
             content: content,
+            content_md: content_md
           };
           article = JSON.stringify(article);
+          let a_html = this.$refs.md.d_render;
+          let a_md = this.$refs.md.d_value;
+          console.log(a_html);
+          console.log(a_md);
           return article;
           //console.log(article)
         },
@@ -179,7 +185,9 @@
     vertical-align: bottom;
   }
   .markdown-body{
-    height: 560px;
+    height: 550px;
+    max-width: 1390px;
+    margin: 0 auto;
   }
 
   .el-row {
@@ -192,9 +200,13 @@
     border-radius: 4px;
   }
   .parentDiv{
-    height: 720px;
-    padding: 35px;
-    border-radius: 5px;
-    box-shadow: 0 0 15px #DCDFE6;
+    height: 738px;
+    max-width: 1400px;
+    margin: 0 auto;;
+    overflow: hidden;
+    background-color: #fff;
+    padding: 20px 10px 10px 10px;
+    border: 1px solid #DCDFE6
+    /*padding: 35px;*/
   }
 </style>

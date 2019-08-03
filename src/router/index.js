@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Login from '../views/Login'
-import Main from '../views/Main'
-import Home from '../views/secondary_view/Home'
+import Home from '../views/Home'
+import Profile from '../views/secondary_view/Profile'
 import New from '../views/secondary_view/New'
 import Article from '../views/secondary_view/Article'
 import Comment from '../views/secondary_view/Comment'
@@ -21,17 +21,17 @@ export default new Router({
     {path: '/login', name: 'Login', component: Login},
     {
       path: '/',
-      name: 'Main',
-      component: Main,
+      name: 'Home',
+      component: Home,
       children: [
-        {path: '/home', name: 'Home', component: Home},
+        {path: '/profile', name: 'Profile', component: Profile},
         {path: '/new', name: 'New', component: New},
         {path: '/articles', name: 'Article', component: Article},
         {path: '/comments', name: 'Comment', component: Comment},
         {path: '/category', name: 'Category', component: Category},
         {path: '/link', name: 'Link', component: Link},
-        {path: '/login_log', name: 'LoginLog', component: LoginLog},
-        {path: '/system_log', name: 'SystemLog', component: SystemLog},
+        {path: '/log/login', name: 'LoginLog', component: LoginLog},
+        {path: '/log/system', name: 'SystemLog', component: SystemLog},
         {path: '/setting', name: 'Setting', component: Setting}
       ]
     },
