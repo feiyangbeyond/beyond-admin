@@ -16,6 +16,7 @@ import store from './store'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'mavon-editor/dist/css/index.css'
 import './logger'
+import './login'
 import { version } from '../package.json'
 
 Vue.prototype.VERSION = version;
@@ -26,28 +27,7 @@ Vue.use(ElementUI);
 Vue.use(mavonEditor);
 
 moment.locale('zh-cn');
-//路由跳转前
-router.beforeEach((to, from, next) => {
-  //获取用户登录状态
-  let isLogin = sessionStorage.getItem('isLogin');
-  console.log(to.path);
-  //注销
-  if(to.path === '/logout'){
-    //清空
-    sessionStorage.clear();
-    //跳转到登录
-    next({path: '/login'});
-  }else if(to.path === '/login'){
-    if(isLogin != null){
-      //跳转到首页
-      next({path: '/home'});
-    }
-  }else if(isLogin == null){
-    //跳转到登录页
-    next({path: '/login'});
-  }
-  next();
-});
+
 
 new Vue({
   el: '#app',
