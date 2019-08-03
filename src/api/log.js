@@ -4,23 +4,17 @@ const baseUrl = '/api/admin/log';
 
 const logApi = {};
 
-logApi.getLoginLog = (pageNum, pageSize) => {
+logApi.getLoginLog = (params) => {
   return service({
     url: `${baseUrl}/login`,
-    data: {
-      pageNum: pageNum,
-      pageSize: pageSize
-    },
+    params: params,
     method: `get`
   })
 };
-logApi.getSystemLog = (pageNum, pageSize) => {
+logApi.getSystemLog = (params) => {
   return service({
     url: `${baseUrl}/system`,
-    data: {
-      pageNum: pageNum,
-      pageSize: pageSize
-    },
+    params: params,
     method: `get`
   })
 };

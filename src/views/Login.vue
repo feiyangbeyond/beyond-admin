@@ -16,6 +16,9 @@
 </template>
 
 <script>
+    import adminApi from "../api/admin";
+    import {mapActions} from "vuex";
+
     export default {
         name: "Login",
       data() {
@@ -38,22 +41,17 @@
         }
       },
       methods: {
+        ...mapActions(['login']),
         submitForm(formName) {
-          let data = this.form;
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              this.axios.post('http://localhost:8080/api/admin/login', data)
+              this.login({ username: this.form.username, password: this.form.password })
                 .then(res=>{
-                  //console.log(res);
-                  if(res.data.code === 200){
-                    sessionStorage.setItem('isLogin', this.form.username);
-                    this.$router.push('/profile');
-                  }
+                    this.loginSuccess()
                 })
                 .catch(error =>{
-                  this.$message.error(error.toString())
+                  this.$message.error("服务异常")
                 });
-
             } else {
               this.$message({
                 message: '请按要求输入',
@@ -63,6 +61,13 @@
             }
           });
         },
+        loginSuccess(){
+          if (this.$route.query.redirect) {
+            this.$router.replace(this.$route.query.redirect)
+          } else {
+            this.$router.replace({ name: 'Profile' })
+          }
+        }
       }
     }
 </script>

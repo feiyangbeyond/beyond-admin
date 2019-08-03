@@ -30,7 +30,7 @@
             <el-tag size="medium" disable-transitions>{{scope.row.ip}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="执行时间" width="150" prop="create_time" :formatter="dateFormat"></el-table-column>
+        <el-table-column label="执行时间" width="150" prop="createTime" :formatter="dateFormat"></el-table-column>
         <el-table-column label="执行地点" prop="location" width="200"></el-table-column>
         <el-table-column label="操作">
           <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteLog">删除</el-button>
@@ -40,41 +40,52 @@
     </el-row>
     <el-row>
       <div class="block">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="totalPage"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalPage"></el-pagination>
       </div>
     </el-row>
   </div>
 </template>
 
 <script>
+  import logApi from "../../api/log";
+
   export default {
     name: "SystemLog",
     data() {
       return {
         loading: false,  //加载动画
         searchLog: '', //搜索框
-        totalPage: 100, //总页数
-        currentPage: 19, //当前页
+        totalPage: 0, //总页数
+        currentPage: 1, //当前页
+        pageSize: 10,//页面大小
         tableData: [{ //日志数据
           id: 1,     //id
-          username: 'beyond', //用户名
-          operation: '查看系统日志', //操作
-          time: '50', //耗时
-          method: 'cn.tsxygfy.blog.controller.admin.api.LogController.getSystemLog()', //调用方法
-          params: '无', //方法参数
-          ip: '127.0.0.1', //ip地址
-          create_time: '2019-05-02 21:32:11', //执行时间
-          location: '内网IP|0|0|内网IP|内网IP', //执行地点
+          username: '', //用户名
+          operation: '', //操作
+          time: '', //耗时
+          method: '', //调用方法
+          params: '', //方法参数
+          ip: '', //ip地址
+          createTime: '', //执行时间
+          location: '', //执行地点
         }
         ],
       }
     },
+    created(){
+      this.loading = true;
+      this.getAll();
+    },
     methods:{
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
+        this.pageSize = val;
+        this.getAll();
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
+        this.currentPage = val;
+        this.getAll();
       },
       //格式化时间
       dateFormat(row, column, cellValue, index){
@@ -82,7 +93,8 @@
       },
       //刷新按钮
       refresh(){
-        console.log("刷新")
+        this.loading = true;
+        this.getAll();
       },
       //删除日志按钮  不提供
       deleteLog(){
@@ -94,6 +106,17 @@
       //打印
       printMachine(){
         window.print();
+      },
+      getAll(){
+        logApi.getSystemLog({pageNum: this.currentPage, pageSize: this.pageSize})
+          .then(res => {
+            this.totalPage = res.data.data.total;
+            this.tableData = res.data.data.list;
+            this.loading = false;
+          })
+          .catch(error => {
+            this.$message.error(error)
+          })
       }
     }
   }

@@ -12,7 +12,7 @@ const user = {
   },
   mutations: {
     SET_TOKEN: (state, token) => {
-      Vue.ls.set(ACCESS_TOKEN, token);
+      // Vue.ls.set(ACCESS_TOKEN, token);
       state.token = token
     },
     SET_NAME: (state, { name }) => {
@@ -26,11 +26,11 @@ const user = {
       state.info = info
     },
     CLEAR_TOKEN: state => {
-      Vue.ls.remove(ACCESS_TOKEN);
+      // Vue.ls.remove(ACCESS_TOKEN);
       state.token = null
     },
     SET_USER: (state, user) => {
-      Vue.ls.set(USER, user);
+      // Vue.ls.set(USER, user);
       state.user = user
     }
   },
@@ -43,7 +43,6 @@ const user = {
             const token = response.data.data;
             Vue.$log.debug('Got token', token);
             commit('SET_TOKEN', token);
-
             resolve(response)
           })
           .catch(error => {

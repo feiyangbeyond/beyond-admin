@@ -23,7 +23,7 @@
           </template>
         </el-table-column>
         <el-table-column label="登录地点" prop="location" width="350"></el-table-column>
-        <el-table-column label="登录时间" width="180" prop="create_time" :formatter="dateFormat"></el-table-column>
+        <el-table-column label="登录时间" width="180" prop="createTime" :formatter="dateFormat"></el-table-column>
         <el-table-column label="设备" prop="device" width="280">
           <template slot-scope="scope">
             <el-tag size="medium" disable-transitions>{{scope.row.device}}</el-tag>
@@ -37,38 +37,49 @@
     </el-row>
     <el-row>
       <div class="block">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="totalPage"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalPage"></el-pagination>
       </div>
     </el-row>
   </div>
 </template>
 
 <script>
+    import logApi from "../../api/log";
+
     export default {
         name: "LoginLog",
       data() {
         return {
           loading: false,  //加载动画
           searchLog: '', //搜索框
-          totalPage: 100, //总页数
-          currentPage: 19, //当前页
+          totalPage: 0, //总页数
+          pageSize: 10,
+          currentPage: 1, //当前页
           tableData: [{ //日志数据
             id: 1,
-            username: '风不止',
-            ip: '127.0.0.1',
-            location: '山东省泰安市',
-            create_time: '2016-05-02 21:32:11',
-            device: 'MACOSX',
+            username: '',
+            ip: '',
+            location: '',
+            createTime: '',
+            device: '',
           }
           ],
         }
       },
+      created(){
+          this.loading = true;
+          this.getAll();
+      },
       methods:{
         handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
+          this.pageSize = val;
+          this.getAll();
         },
         handleCurrentChange(val) {
           console.log(`当前页: ${val}`);
+          this.currentPage = val;
+          this.getAll();
         },
         //格式化时间
         dateFormat(row, column, cellValue, index){
@@ -76,7 +87,8 @@
         },
         //刷新按钮
         refresh(){
-          console.log("刷新")
+          this.loading = true;
+          this.getAll();
         },
         //删除日志按钮  不提供
         deleteLog(){
@@ -84,6 +96,17 @@
             title: '错误',
             message: '不提供删除方法'
           });
+        },
+        getAll(){
+          logApi.getLoginLog({pageNum: this.currentPage, pageSize: this.pageSize})
+            .then(res => {
+              this.totalPage = res.data.data.total;
+              this.tableData = res.data.data.list;
+              this.loading = false;
+            })
+            .catch(error => {
+              this.$message.error(error)
+            })
         }
       }
     }

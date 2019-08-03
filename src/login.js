@@ -16,7 +16,7 @@ router.beforeEach((to, from, next) => {
   Vue.$log.debug('Token', store.getters.token);
   if (store.getters.token) {
     if (to.name === 'Login') {
-      next({ name: 'Dashboard' });
+      next({ name: 'Profile' });
       NProgress.done();
       return
     }

@@ -1,5 +1,5 @@
 <template>
-  <div class="parent-div">
+  <div class="parent-div" v-loading="loading">
     <el-row><h3>文章管理</h3></el-row>
     <el-row>
       <el-col :span="8">
@@ -11,11 +11,11 @@
       <el-col :span="4" :offset="11">
         <el-button size="medium" type="primary" plain @click="addNew"><i class="el-icon-plus"></i></el-button>
         <el-button size="medium" type="primary" plain @click="getArticles"><i class="el-icon-refresh-right"></i></el-button>
-        <el-button size="medium" type="primary" plain><i class="el-icon-printer"></i></el-button>
+        <el-button size="medium" type="primary" plain @click="printMachine"><i class="el-icon-printer"></i></el-button>
       </el-col>
     </el-row>
     <el-row>
-      <el-table :data="tableData" style="width: 100%" border v-loading="loading">
+      <el-table :data="tableData" style="width: 100%" border>
       <el-table-column sortable label="编号" prop="id" width="75"></el-table-column>
       <el-table-column label="文章标题" prop="title"></el-table-column>
       <el-table-column label="作者" width="110" prop="author">
@@ -46,44 +46,51 @@
     </el-row>
     <el-row>
       <div class="block">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="totalPage"></el-pagination>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalPage"></el-pagination>
       </div>
     </el-row>
   </div>
 </template>
 
 <script>
+    import articleApi from "../../api/article";
+
     export default {
         name: "Article",
       data() {
         return {
           loading: false, //加载动画
           searchArticle: '', //搜索框
-          totalPage: 100, //总页数
-          currentPage: 19, //当前页
+          totalPage: 0, //总页数
+          currentPage: 1, //当前页
+          pageSize: 10, //每页条目
           tableData: [{ //文章数据
             id: 1,
-            title: '标题',
-            author: '风不止',
-            editTime: '2016-05-02',
-            views: 11111,
-            category: '测试',
-            state: '0'
+            title: '',
+            author: '',
+            editTime: '',
+            views: 0,
+            category: '',
+            state: ''
           }
           ],
 
         }
       },
       created(){
-          this.loading = false;
+          this.loading = true;
           this.getArticles();
       },
       methods: {
         handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
+          this.pageSize = val;
+          this.getArticles();
         },
         handleCurrentChange(val) {
           console.log(`当前页: ${val}`);
+          this.currentPage = val;
+          this.getArticles();
         },
         //格式化日期
         dateFormat(row, column, cellValue, index){
@@ -95,10 +102,15 @@
         },
         //获取文章
         getArticles(){
-          this.axios.get('http://localhost:8080/api/getContents').then(res=>{
-            this.tableData = res.data.data.articles;
-            this.loading = false;
-          })
+          articleApi.getAll({pageNum: this.currentPage, pageSize: this.pageSize})
+            .then(res => {
+              this.totalPage = res.data.data.total;
+              this.tableData = res.data.data.list;
+              this.loading = false;
+            })
+            .catch(error => {
+              this.$message.error("服务异常")
+            })
         },
         //删除一个
         deleteOne(index, row){
@@ -115,7 +127,11 @@
             .catch(_ => {
               console.log("取消删除"+index);
             });
-        }
+        },
+        //打印
+        printMachine(){
+          window.print();
+        },
       },
     }
 </script>

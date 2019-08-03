@@ -10,7 +10,7 @@
       </el-col><el-col :span="5">
         <el-card class="box-card">
           <h1><i class="el-icon-chat-line-round"></i></h1>
-          <span>收到了{{comments}}条评论</span>
+          <span>友链了{{links}}个好友</span>
         </el-card>
       </el-col><el-col :span="5">
         <el-card class="box-card">
@@ -28,16 +28,18 @@
 </template>
 
 <script>
+  import adminApi from "../../api/admin";
+
   export default {
     name: "Home",
     data(){
       return {
         currentDate: new Date(),
         loading: false,
-        runDays: 0,
-        articles: 0,
-        comments: 0,
-        visited: 0,
+        runDays: 0,//运行天数
+        articles: 0,//文章总数
+        links: 0,//评论
+        visited: 0,//访问量
       }
     },
     beforeRouteEnter: (to, from, next) => {
@@ -51,19 +53,30 @@
       console.log('准备离开首页');
       next();
     },
-    mounted(){
+    created(){
       this.getData();
-      this.loading = false;
+      this.loading = true;
     },
+    /*
+    articleCount: 6
+attachmentCount: 0
+birthday: 1563267217000
+commentCount: 3
+establishDays: 18
+linkCount: 2
+visitedCount: 0*/
     methods: {
-      getData: function () {
-        this.axios({
-          method: 'get',
-          url: 'http://localhost:8080/api/admin/info'
-        }).then(function (resp) {
-          console.log(resp);
-        }).catch(function (error) {
-          console.log(error);
+      getData(){
+        adminApi.info()
+          .then(res => {
+            this.runDays = res.data.data.establishDays;
+            this.articles = res.data.data.articleCount;
+            this.visited = res.data.data.visitedCount;
+            this.links = res.data.data.linkCount;
+            this.loading = false;
+          })
+          .catch(error => {
+            this.$message.error("服务异常")
         });
       }
     }

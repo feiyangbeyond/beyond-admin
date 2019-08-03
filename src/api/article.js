@@ -5,13 +5,10 @@ const baseUrl = '/api/admin/articles';
 const articleApi = {};
 
 //获取所有文章
-articleApi.getAll = (pageNum, pageSize) => {
+articleApi.getAll = (data) => {
   return service({
-    url: `${baseUrl}`,
-    data:{
-      pageNum: pageNum,
-      pageSize: pageSize
-    },
+    url: baseUrl,
+    params: data,
     method: `get`
   })
 };
