@@ -11,9 +11,25 @@ categoryApi.getAll = () => {
   })
 };
 
-categoryApi.add = () => {
+categoryApi.addOne = (category) => {
   return service({
+    url: `${baseUrl}`,
+    data: category,
+    method: 'post'
+  })
+};
 
+categoryApi.updateOne = (category) => {
+  return service({
+    url: `${baseUrl}`,
+    data: category,
+    method: 'put'
+  })
+};
+categoryApi.deleteOne = (id) => {
+  return service({
+    url: `${baseUrl}/${id}`,
+    method: 'delete'
   })
 };
 

@@ -83,7 +83,7 @@
         },
         //格式化时间
         dateFormat(row, column, cellValue, index){
-          return  this.$moment(row.create_time).format("YYYY-MM-DD HH:mm")
+          return  this.$moment(row.createTime).format("YYYY-MM-DD HH:mm")
         },
         //刷新按钮
         refresh(){

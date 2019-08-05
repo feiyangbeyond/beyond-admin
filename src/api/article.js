@@ -7,7 +7,7 @@ const articleApi = {};
 //获取所有文章
 articleApi.getAll = (data) => {
   return service({
-    url: baseUrl,
+    url: `${baseUrl}`,
     params: data,
     method: `get`
   })
@@ -26,6 +26,7 @@ articleApi.add = (article) => {
   return service({
     url: `${baseUrl}/add`,
     data: article,
+    type: 'json',
     method: `post`
   })
 };

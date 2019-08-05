@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="5" :offset="2">
         <el-select v-model="categories" clearable placeholder="请选择文章分类">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item.name"></el-option>
         </el-select>
       </el-col>
       <el-col :span="8">
@@ -47,6 +47,9 @@
 
 <script>
 
+    import articleApi from "../../api/article";
+    import categoryApi from "../../api/category";
+
     export default {
         name: "New",
       data(){
@@ -57,30 +60,20 @@
             inputVisible: false,
             inputValue: '',
             categories: '',
-            options: [{
-              value: 'HTML',
-              label: 'HTML'
-            }, {
-              value: 'CSS',
-              label: 'CSS'
-            }, {
-              value: 'JavaScript',
-              label: 'JavaScript'
-            }, {
-              value: 'Java',
-              label: 'Java'
-            }],
+            options: [],
             value: [],
             a_from: '原创',
             site: 'https://www.tsxygfy.cn',
             writeTime: new Date()
           }
       },
+      created(){
+        this.getCategory();
+      },
       methods:{
-        deleteSome(tag) {
+        handleClose(tag) {
           this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
         },
-
         showTag() {
           this.inputVisible = true;
           this.$nextTick(_ => {
@@ -95,27 +88,29 @@
           this.inputVisible = false;
           this.inputValue = '';
         },
-        //获取文章信息
-        getArticle(){
+        //获取页面文章信息
+        getArticle(state){
           let title = this.title;
           let tags = this.dynamicTags;
           let category = this.categories;
-          let createTime = this.writeTime.toLocaleString();
+          let createTime = this.writeTime;
           let site = this.site;
-          let a_from = this.a_from;
+          let a_from = this.a_from === '原创' ? 0 : 1;
           let content = this.$refs.md.d_value;
           let content_md = this.$refs.md.d_render;
           let article = {
             title: title,
             tags: tags,
             category: category,
-            createTime: createTime,
-            site: site,
-            from: a_from,
+            editTime: createTime,
+            origin: site,
+            type: a_from,
             content: content,
-            content_md: content_md
+            contentMd: content_md,
+            author: '风不止',
+            state: state
           };
-          article = JSON.stringify(article);
+
           let a_html = this.$refs.md.d_render;
           let a_md = this.$refs.md.d_value;
           console.log(a_html);
@@ -125,43 +120,21 @@
         },
         //发布文章
         publish(data){
-          let that = this;
-          //console.log(data);
-          that.axios
-            .post('https://www.tsxygfy.cn', data)
-            .then(res=> {
-              //if(res){
-                that.$message({
-                  message: '发布成功！',
-                  type: 'success'
-                })
-              //}
-            })
-            .catch(function (error) {
-              that.$message({
-                message: error.toString(),
-                type: 'error'
-              })
-            });
+          articleApi.add(this.getArticle('1')).then(res => {
+            if (res.data.code === 200){
+              this.$message.success("发布成功")
+            }
+          })
         },
+        //保存草稿
         asDraft(data){
-          let that = this;
-          that.axios
-            .post('http://localhost:8081', data)
-            .then(res=>{
-              //if(res){
-                that.$message({
-                  message: '已保存到草稿！',
-                  type: 'success'
-                })
-              //}
-            })
-            .catch(function (error) {
-              that.$message({
-                message: error.toString(),
-                type: 'error'
-              })
-            });
+          articleApi.add(this.getArticle('0'))
+        },
+        //获取全部分类
+        getCategory(){
+          categoryApi.getAll().then(res => {
+            this.options = res.data.data;
+          })
         }
       }
     }

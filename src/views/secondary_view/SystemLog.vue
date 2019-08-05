@@ -25,13 +25,13 @@
         </el-table-column>
         <el-table-column label="调用方法" width="290" prop="method"></el-table-column>
         <el-table-column label="方法参数" prop="params" width="180"></el-table-column>
-        <el-table-column label="IP地址" width="98" prop="ip">
+        <el-table-column label="IP地址" width="130" prop="ip">
           <template slot-scope="scope">
             <el-tag size="medium" disable-transitions>{{scope.row.ip}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="执行时间" width="150" prop="createTime" :formatter="dateFormat"></el-table-column>
-        <el-table-column label="执行地点" prop="location" width="200"></el-table-column>
+        <el-table-column label="执行地点" prop="location" width="130"></el-table-column>
         <el-table-column label="操作">
           <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteLog">删除</el-button>
         </el-table-column>
@@ -89,7 +89,7 @@
       },
       //格式化时间
       dateFormat(row, column, cellValue, index){
-        return  this.$moment(row.create_time).format("YYYY-MM-DD HH:mm")
+        return  this.$moment(row.createTime).format("YYYY-MM-DD HH:mm")
       },
       //刷新按钮
       refresh(){

@@ -99,6 +99,7 @@
         //点击添加按钮  跳转到添加
         addNew(){
           this.$router.push('/new')
+
         },
         //获取文章
         getArticles(){
@@ -116,8 +117,9 @@
         deleteOne(index, row){
           this.$confirm('确认删除？')
             .then(_ => {
-              console.log("确认删除"+index);
-              console.log(index, row.id) //row是index行的全部数据 index从0开始
+              articleApi.delete(row.id);
+              console.log(index, row.id); //row是index行的全部数据 index从0开始
+              this.getArticles();
               this.$notify({
                 title: '成功',
                 message: '删除成功',
