@@ -77,8 +77,7 @@
                 tagApi.deleteOne(id);
                 this.getTag();
               }
-              this.$notify({
-                title: '成功',
+              this.$message({
                 message: '删除成功',
                 type: 'success'
               });
@@ -100,7 +99,7 @@
               tagApi.updateOne({id: id, name: value});
               this.getTag();
             }
-            this.$notify({type: 'success', message: '更新成功: ' + value});
+            this.$message({type: 'success', message: '更新成功: ' + value});
           });
         },
 
@@ -118,7 +117,7 @@
               tagApi.addOne({name: value});
               this.getTag();
             }
-            this.$notify({type: 'success', message: '新增成功: ' + value});
+            this.$message({type: 'success', message: '新增成功: ' + value});
           });
         },
         getCategory(){

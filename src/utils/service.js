@@ -1,10 +1,14 @@
 import axios from 'axios'
 import Vue from 'vue'
+import { Message } from 'element-ui';
 import store from '../store'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+import router from '../router'
 
 //封装axios
 const service = axios.create({
-  baseURL: `/api`,
+  baseURL: `/local_api`,
   timeout: 5000,
   withCredentials: true
 });
@@ -22,49 +26,69 @@ service.interceptors.request.use(
 );
 
 //响应拦截器
-// service.interceptors.response.use(
-//   response =>{
-//     return response;
-//   },
-//   error => {
-//     if (axios.isCancel(error)) {
-//       Vue.$log.debug('Cancelled uploading by user.');
-//       return Promise.reject(error)
-//     }
-//
-//     Vue.$log.error('Response failed', error);
-//
-//     const response = error.response;
-//     const status = response ? response.status : -1;
-//     Vue.$log.error('Server response status', status);
-//
-//     const data = response ? response.data : null;
-//     if (data) {
-//       let handled = false;
-//       // Business response
-//       Vue.$log.error('Business response status', data.status);
-//       if (data.status === 400) {
-//         // TODO handle 400 status error
-//       } else if (data.status === 401) {
-//         // TODO handle 401 status error
-//       } else if (data.status === 403) {
-//         // TODO handle 403 status error
-//       } else if (data.status === 404) {
-//         // TODO handle 404 status error
-//       } else if (data.status === 500) {
-//         // TODO handle 500 status error
-//       }
-//
-//       if (!handled) {
-//         this.$message.error(data.message)
-//       }
-//     } else {
-//       this.$message.error('服务异常')
-//     }
-//
-//     return Promise.reject(error)
-//   }
-// );
+service.interceptors.response.use(
+  response => {
+    NProgress.done();
+    return response
+  },
+  error => {
+    NProgress.done();
+
+    //取消请求
+    if (axios.isCancel(error)) {
+      return Promise.reject(error)
+    }
+
+    //失败
+    const response = error.response;
+    const status = response ? response.status : -1;
+    const data = response ? response.data : null;
+
+    if (data) {
+      let handled = false;
+      if (data.status) {
+          handled = true;
+        console.log(data.status);
+        Message({
+          showClose: true,
+          message: data.message,
+          type: 'error'
+        });
+      /*} else if (data.status === 401) {
+        if (store.getters.token && store.getters.token === data.data) {
+          const res = refreshToken(error);
+          if (res !== error) {
+            return res
+          }
+        } else {
+          // Login
+          router.push({ name: 'Login' })
+        }
+      } else if (data.status === 403) {
+        // TODO handle 403 status error
+      } else if (data.status === 404) {
+        // TODO handle 404 status error
+      } else if (data.status === 500) {
+        // TODO handle 500 status error*/
+      }
+
+      if (!handled) {
+        Message({
+          showClose: true,
+          message: data.message,
+          type: 'error'
+        });
+      }
+    } else {
+      Message({
+        showClose: true,
+        message: '服务异常',
+        type: 'error'
+      });
+    }
+    return Promise.reject(error)
+  }
+);
 
 function setTokenToHeader(config) {
   // set token
@@ -83,5 +107,27 @@ async function reRequest(error) {
   return res;
 }
 
+
+
+let refreshTask = null;
+
+async function refreshToken(error) {
+  const refreshToken = store.getters.token;
+  try {
+    if (refreshTask === null) {
+      refreshTask = store.dispatch('refreshToken', refreshToken)
+    }
+
+    await refreshTask
+  } catch (err) {
+    if (err.response && err.response.data && err.response.data.data === refreshToken) {
+      router.push({ name: 'Login' })
+    }
+    Vue.$log.error('Failed to refresh token', err)
+  } finally {
+    refreshTask = null
+  }
+  return reRequest(error)
+}
 
 export default service

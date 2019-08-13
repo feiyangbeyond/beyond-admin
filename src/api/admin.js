@@ -41,4 +41,11 @@ adminApi.setting = () => {
   })
 };
 
+
+adminApi.refreshToken = refreshToken => {
+  return service({
+    url: `${baseUrl}/refresh/${refreshToken}`,
+    method: 'post'
+  })
+}
 export default adminApi

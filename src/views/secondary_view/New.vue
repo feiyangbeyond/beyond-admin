@@ -91,16 +91,25 @@
         //获取页面文章信息
         getArticle(state){
           let title = this.title;
-          let tags = this.dynamicTags;
+          let tags = [];
           let category = this.categories;
           let createTime = this.writeTime;
           let site = this.site;
           let a_from = this.a_from === '原创' ? 0 : 1;
           let content = this.$refs.md.d_value;
           let content_md = this.$refs.md.d_render;
-          let article = {
+
+          for(let i=0; i<this.dynamicTags.length; i++){
+              let name = this.dynamicTags[i];
+              let tag = {id: null ,name: name};
+              tags.push(tag);
+          }
+
+          console.log(tags);
+
+          let article1 = {
             title: title,
-            tags: tags,
+            // tags: tags,
             category: category,
             editTime: createTime,
             origin: site,
@@ -110,13 +119,9 @@
             author: '风不止',
             state: state
           };
-
-          let a_html = this.$refs.md.d_render;
-          let a_md = this.$refs.md.d_value;
-          console.log(a_html);
-          console.log(a_md);
+          let article = {tbArticle: article1, tags: tags};
+          console.log(article);
           return article;
-          //console.log(article)
         },
         //发布文章
         publish(data){
@@ -179,7 +184,7 @@
     overflow: hidden;
     background-color: #fff;
     padding: 20px 10px 10px 10px;
-    border: 1px solid #DCDFE6
+    /*border: 1px solid #DCDFE6*/
     /*padding: 35px;*/
   }
 </style>

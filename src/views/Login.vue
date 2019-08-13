@@ -16,7 +16,6 @@
 </template>
 
 <script>
-    import adminApi from "../api/admin";
     import {mapActions} from "vuex";
 
     export default {
@@ -49,9 +48,6 @@
                 .then(res=>{
                     this.loginSuccess()
                 })
-                .catch(error =>{
-                  this.$message.error("服务异常")
-                });
             } else {
               this.$message({
                 message: '请按要求输入',

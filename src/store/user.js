@@ -63,28 +63,26 @@ const user = {
           })
       })
     },
-    // refreshToken({ commit }, refreshToken) {
-    //   return new Promise((resolve, reject) => {
-    //     adminApi
-    //       .refreshToken(refreshToken)
-    //       .then(response => {
-    //         const token = response.data.data;
-    //         Vue.$log.debug('Got token', token);
-    //         commit('SET_TOKEN', token);
-    //
-    //         resolve(response)
-    //       })
-    //       .catch(error => {
-    //         const data = error.response.data;
-    //         Vue.$log.debug('Refresh error data', data);
-    //         if (data && data.status === 400 && data.data === refreshToken) {
-    //           // The refresh token expired
-    //           commit('CLEAR_TOKEN')
-    //         }
-    //         reject(error)
-    //       })
-    //   })
-    // }
+    refreshToken({ commit }, refreshToken) {
+      return new Promise((resolve, reject) => {
+        adminApi
+          .refreshToken(refreshToken)
+          .then(response => {
+            const token = response.data.data;
+            commit('SET_TOKEN', token);
+
+            resolve(response)
+          })
+          .catch(error => {
+            const data = error.response.data;
+            if (data && data.status === 400 && data.data === refreshToken) {
+              // The refresh token expired
+              commit('CLEAR_TOKEN')
+            }
+            reject(error)
+          })
+      })
+    }
   }
 };
 

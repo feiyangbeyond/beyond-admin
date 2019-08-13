@@ -1,10 +1,6 @@
 <template>
       <el-container><!--style="max-width: 1500px; margin: 0 auto;background: #f0f2f5" -->
         <el-header>
-<!--          <el-row>-->
-<!--            <el-col :span="2"><Logo/></el-col>-->
-<!--            <el-col :span="15"><Menu/></el-col>-->
-<!--          </el-row>-->
           <Menu/>
         </el-header>
 
@@ -41,7 +37,10 @@
     margin: 0 auto;
   }
 
-
+  .el-container{
+    min-height: 100vh;
+    margin: 0;
+  }
   .el-main {
     text-align: center;
     height: 790px;

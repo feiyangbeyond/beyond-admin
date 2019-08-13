@@ -114,12 +114,13 @@
 
 <style scoped>
   .parent-div{
-    padding: 35px;
-    border-radius: 5px;
-    box-shadow: 0 0 15px #DCDFE6;
+    padding: 35px 35px 3px 35px;
+    /*border-radius: 5px;*/
+    /*box-shadow: 0 0 15px #DCDFE6;*/
     max-width: 1400px;
     margin: 0 auto;
     background-color: #fff;
+    overflow: hidden;
   }
   .el-row {
     margin-bottom: 20px;
