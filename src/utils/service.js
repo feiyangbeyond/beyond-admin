@@ -8,7 +8,7 @@ import router from '../router'
 
 //封装axios
 const service = axios.create({
-  baseURL: `/local_api`,
+  baseURL: ``,
   timeout: 5000,
   withCredentials: true
 });
