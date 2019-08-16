@@ -1,6 +1,8 @@
 # beyond-admin
 
-> A Vue.js project
+> beyond blog后台管理
+
+使用[Vue.js](https://vuejs.org/) + [ElementUI](https://element.eleme.cn)
 
 ## Build Setup
 
